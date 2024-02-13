@@ -19,7 +19,8 @@ import crypto from 'crypto';
 import differenceInCalendarYears from 'date-fns/differenceInCalendarYears';
 import differenceInYears from 'date-fns/differenceInYears';
 import format from 'date-fns/format';
-import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { ref, getDownloadURL, uploadBytesResumable, getStorage } from 'firebase/storage';
+import x from 'firebase';
 import { getSession } from 'next-auth/react';
 import Link from 'next/link';
 import DatePicker from 'react-datepicker';
@@ -179,8 +180,9 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
       anotherEmail.length > 0 &&
       address1.length > 0 &&
       address2.length > 0 &&
-      birthCertificateLink &&
-      birthCertificateLink?.length > 0) ||
+      birthCertificateLink>0
+      // birthCertificateLink?.length > 0
+      ) ||
     (step === 1 && accreditation !== null) ||
     (step === 2 &&
       payment !== null &&
@@ -376,51 +378,51 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
     }
   };
 
-  const handleBirthCertificateUpload = (e, auto, studentId) => {
-    const file = e.target?.files[0];
+  // const handleBirthCertificateUpload = (e, auto, studentId) => {
+  //   const file = e.target?.files[0];
+  //   if (file) {
+  //     if (file.size < 5242880) {
+  //       const extension = file.name.split('.').pop();
+  //       const storageRef = ref(
+  //         storage,
+  //         `files/${slug}/birth-${crypto
+  //           .createHash('md5')
+  //           .update(file.name)
+  //           .digest('hex')
+  //           .substring(0, 12)}-${format(
+  //           new Date(),
+  //           'yyyy.MM.dd.kk.mm.ss'
+  //         )}.${extension}`
+  //       );
+  //       const uploadTask = uploadBytesResumable(storageRef, file);
 
-    if (file) {
-      if (file.size < 5242880) {
-        const extension = file.name.split('.').pop();
-        const storageRef = ref(
-          storage,
-          `files/${slug}/birth-${crypto
-            .createHash('md5')
-            .update(file.name)
-            .digest('hex')
-            .substring(0, 12)}-${format(
-            new Date(),
-            'yyyy.MM.dd.kk.mm.ss'
-          )}.${extension}`
-        );
-        const uploadTask = uploadBytesResumable(storageRef, file);
 
-        uploadTask.on(
-          'state_changed',
-          (snapshot) => {
-            const progress = Math.round(
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-            );
-            setBirthCertificateProgress(progress);
-          },
-          (error) => {
-            toast.error(error);
-          },
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              if (!auto) {
-                setBirthCertificateLink(downloadURL);
-              } else {
-                updateFile(studentId, 'birth', downloadURL);
-              }
-            });
-          }
-        );
-      }
-    } else {
-      toast.error('File too large. Size should not exceed 10 MB.');
-    }
-  };
+  //       uploadTask.on(
+  //         'state_changed',
+  //         (snapshot) => {
+  //           const progress = Math.round(
+  //             (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+  //           );
+  //           setBirthCertificateProgress(progress);
+  //         },
+  //         (error) => {
+  //           toast.error(error);
+  //         },
+  //         () => {
+  //           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+  //             if (!auto) {
+  //               setBirthCertificateLink(downloadURL);
+  //             } else {
+  //               updateFile(studentId, 'birth', downloadURL);
+  //             }
+  //           });
+  //         }
+  //       );
+  //     }
+  //   } else {
+  //     toast.error('File too large. Size should not exceed 10 MB.');
+  //   }
+  // };
 
   const handleReportCardUpload = (e, auto, studentId) => {
     const file = e.target?.files[0];
@@ -503,7 +505,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
         payment,
         birthDate,
         pictureLink,
-        birthCertificateLink,
+        //birthCertificateLink,
         reportCardLink,
         paymentMethod,
         slug,
@@ -564,10 +566,10 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
             setPictureLink(url);
             break;
           }
-          case 'birth': {
-            setBirthCertificateLink(url);
-            break;
-          }
+          // case 'birth': {
+          //   setBirthCertificateLink(url);
+          //   break;
+          // }
           case 'card': {
             setReportCardLink(url);
             break;
@@ -829,14 +831,14 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                   copy of the child's birth certificate
                 </p>
               </td>
-              <td className="w-1/4 px-3 py-2 border">
+               {/* <td className="w-1/4 px-3 py-2 border">
                 <input
                   className="text-xs cursor-pointer"
                   accept=".gif,.jpeg,.jpg,.png,.pdf"
                   disabled={!firstName || !lastName}
                   onChange={handleBirthCertificateUpload}
                   type="file"
-                />
+                /> 
                 <div className="w-full mt-2 rounded-full shadow bg-grey-light">
                   <div
                     className="py-0.5 text-xs leading-none text-center rounded-full bg-secondary-500"
@@ -845,7 +847,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
                     <span className="px-3">{birthCertificateProgress}%</span>
                   </div>
                 </div>
-              </td>
+              </td> */}
               <td className="w-1/4 px-3 py-2 border">
                 <div className="flex flex-col items-center justify-center">
                   {birthCertificateLink ? (
@@ -2396,7 +2398,7 @@ const EnrollmentProcess = ({ guardian, schoolFees, programs }) => {
             )}
             <Button
               className="text-white bg-primary-600 hover:bg-primary-500"
-              disabled={!validateNext}
+              //disabled={!validateNext}
               onClick={next}
             >
               {step === steps.length - 1 ? 'Proceed' : 'Next'}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import {
   BadgeCheckIcon,
   LightningBoltIcon,
@@ -22,6 +23,10 @@ const Users = () => {
 
   const toggleModal = () => setModalVisibility(!showModal);
 
+  const myFunction = () => (console.log(data));
+
+  myFunction();
+
   return (
     <AdminLayout>
       <Meta title="Living Pupil Homeschool - Users" />
@@ -30,18 +35,17 @@ const Users = () => {
         title="Users List"
         subtitle="View and manage all user details and related data"
       />
-      <Content.Divider />
       <Card>
-        <Card.Body title="List of Account Users">
-          <div>
+        <Card.Body title="List of Account Users" b>
+          {/* <div>
             <Link href="/account/admin/users/users-export">
               <a className="items-center px-3 py-2 space-x-2 text-sm text-white rounded bg-primary-500 hover:bg-primary-600">
                 Generate Users Master List
               </a>
             </Link>
-          </div>
+          </div> */}
           <div>
-            <table className="w-full">
+            {/* <table className="w-full">
               <thead>
                 <tr className="bg-gray-200 border-t border-b border-t-gray-300 border-b-gray-300">
                   <th className="p-2 font-medium text-left">Name</th>
@@ -115,7 +119,82 @@ const Users = () => {
                   </tr>
                 )}
               </tbody>
-            </table>
+            </table> */}
+                  
+  <DataGrid
+  autoHeight
+  rows={data ? data.users : []}
+  columns={[
+    
+    {
+      field: 'name',
+      headerName: 'Name',
+      flex: 1,
+      renderCell: (params) => (
+        <div className="flex items-center space-x-3 text-left p-1">
+          <div className="relative flex items-center justify-center w-12 h-12 overflow-hidden bg-gray-300 rounded-full">
+            {params.row.image ? (
+              <Image
+                alt={params.row.name}
+                layout="fill"
+                loading="lazy"
+                objectFit="contain"
+                src={params.row.image}
+              />
+            ) : (
+              <UserIcon className="w-5 h-5 text-white" />
+            )}
+          </div>
+          <div>
+            <h4 className="flex items-center text-xl font-medium capitalize text-primary-500">
+              <span>{`${params.row.name || '-'}`}</span>
+              {params.row.userType === UserType.ADMIN && (
+                <span className="flex items-center justify-center w-4 h-4 ml-1 bg-red-600 rounded-full">
+                  <LightningBoltIcon className="w-3 h-3 text-white" />
+                </span>
+              )}
+              {params.row.emailVerified && (
+                <span className="ml-1">
+                  <BadgeCheckIcon className="w-5 h-5 text-green-600" />
+                </span>
+              )}
+            </h4>
+            <h5 className="flex items-center font-bold">
+              <span className="text-xs">{params.row.email}</span>
+            </h5>
+          </div>
+        </div>
+      ),
+    },
+    {
+      field: 'createdAt',
+      headerName: 'Joined',
+      flex: 1,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: (params) => (
+        <span className="text-xs text-center">
+          {params.row.createdAt
+            ? formatDistance(
+                new Date(params.row.createdAt),
+                new Date(),
+                {
+                  addSuffix: true,
+                }
+              )
+            : 'Invited'}
+        </span>
+      ),
+    },
+  ]}
+  loading={isLoading}
+  pageSize={10}
+  components={{ Toolbar: GridToolbar }}
+  density="comfortable"
+  disableSelectionOnClick
+/>
+
+
           </div>
         </Card.Body>
       </Card>

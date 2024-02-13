@@ -180,9 +180,9 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
       telephoneNumber.length > 0 &&
       anotherEmail.length > 0 &&
       address1.length > 0 &&
-      address2.length > 0 &&
-      birthCertificateLink &&
-      birthCertificateLink?.length > 0) ||
+      address2.length > 0)||
+      // birthCertificateLink &&
+      // birthCertificateLink?.length > 0) ||
     (step === 1 && accreditation !== null) ||
     (step === 2 &&
       payment !== null &&
@@ -373,51 +373,51 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
     }
   };
 
-  const handleBirthCertificateUpload = (e, auto, studentId) => {
-    const file = e.target?.files[0];
+  // const handleBirthCertificateUpload = (e, auto, studentId) => {
+  //   const file = e.target?.files[0];
 
-    if (file) {
-      if (file.size < 5242880) {
-        const extension = file.name.split('.').pop();
-        const storageRef = ref(
-          storage,
-          `files/${workspace.slug}/birth-${crypto
-            .createHash('md5')
-            .update(file.name)
-            .digest('hex')
-            .substring(0, 12)}-${format(
-            new Date(),
-            'yyyy.MM.dd.kk.mm.ss'
-          )}.${extension}`
-        );
-        const uploadTask = uploadBytesResumable(storageRef, file);
+  //   if (file) {
+  //     if (file.size < 5242880) {
+  //       const extension = file.name.split('.').pop();
+  //       const storageRef = ref(
+  //         storage,
+  //         `files/${workspace.slug}/birth-${crypto
+  //           .createHash('md5')
+  //           .update(file.name)
+  //           .digest('hex')
+  //           .substring(0, 12)}-${format(
+  //           new Date(),
+  //           'yyyy.MM.dd.kk.mm.ss'
+  //         )}.${extension}`
+  //       );
+  //       const uploadTask = uploadBytesResumable(storageRef, file);
 
-        uploadTask.on(
-          'state_changed',
-          (snapshot) => {
-            const progress = Math.round(
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-            );
-            setBirthCertificateProgress(progress);
-          },
-          (error) => {
-            toast.error(error);
-          },
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              if (!auto) {
-                setBirthCertificateLink(downloadURL);
-              } else {
-                updateFile(studentId, 'birth', downloadURL);
-              }
-            });
-          }
-        );
-      }
-    } else {
-      toast.error('File too large. Size should not exceed 10 MB.');
-    }
-  };
+  //       uploadTask.on(
+  //         'state_changed',
+  //         (snapshot) => {
+  //           const progress = Math.round(
+  //             (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+  //           );
+  //           setBirthCertificateProgress(progress);
+  //         },
+  //         (error) => {
+  //           toast.error(error);
+  //         },
+  //         () => {
+  //           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+  //             if (!auto) {
+  //               setBirthCertificateLink(downloadURL);
+  //             } else {
+  //               updateFile(studentId, 'birth', downloadURL);
+  //             }
+  //           });
+  //         }
+  //       );
+  //     }
+  //   } else {
+  //     toast.error('File too large. Size should not exceed 10 MB.');
+  //   }
+  // };
 
   const handleReportCardUpload = (e, auto, studentId) => {
     const file = e.target?.files[0];
@@ -500,7 +500,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
         payment,
         birthDate,
         pictureLink,
-        birthCertificateLink,
+        //birthCertificateLink,
         reportCardLink,
         paymentMethod,
         slug: workspace.slug,
@@ -790,7 +790,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                 </div>
               </td>
             </tr>
-            <tr>
+            {/* <tr>
               <td
                 className={`w-1/2 px-3 py-2 ${
                   !birthCertificateLink ? 'border-red-500 border-2' : 'border'
@@ -835,7 +835,7 @@ const Workspace = ({ guardian, schoolFees, programs }) => {
                   )}
                 </div>
               </td>
-            </tr>
+            </tr> DO NOT PUSH THIS TO THE REPO */} 
             <tr>
               <td className="w-1/2 px-3 py-2 border">
                 <h3 className="text-xl font-medium">

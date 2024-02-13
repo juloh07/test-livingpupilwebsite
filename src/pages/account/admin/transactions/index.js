@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import formatDistance from 'date-fns/formatDistance';
 import api from '@/lib/common/api';
 import { ChevronDownIcon } from '@heroicons/react/outline';
-
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Papa from 'papaparse';
 
 import Meta from '@/components/Meta';
@@ -576,6 +576,155 @@ const Transactions = () => {
               </p>
             )) ||
               null}
+      {/* <DataGrid
+        rows={data ? data.transaction : []}
+        columns={[
+          {
+            field: 'id', // Add your field properties here
+            headerName: 'ID',
+            flex: 1,
+          },
+          {
+            field: 'name',
+            headerName: 'Student Information',
+            flex: 1,
+            renderCell: (params.row.) => (
+              <div>
+                <h4 className="flex items-center space-x-3 text-xl font-medium capitalize text-primary-500">
+                  <span>{`${transaction.schoolFee.student.studentRecord.firstName}`}</span>
+                  <span className="px-2 py-0.5 text-xs bg-secondary-500 rounded-full">{`${
+                    GRADE_LEVEL[
+                      transaction.schoolFee.student.studentRecord
+                        .incomingGradeLevel
+                    ]
+                  }`}</span>
+                </h4>
+                <h5 className="font-bold">
+                  <span className="text-xs">{`${
+                    PROGRAM[
+                      transaction.schoolFee.student.studentRecord
+                        .program
+                    ]
+                  } - ${
+                    ACCREDITATION[
+                      transaction.schoolFee.student.studentRecord
+                        .accreditation
+                    ]
+                  }`}</span>
+                </h5>
+                <p className="text-xs text-gray-400">
+                  Created{' '}
+                  {new Date(transaction.createdAt).toDateString()}{' '}
+                  by{' '}
+                  <strong>
+                    {transaction.user.guardianInformation
+                      ? transaction.user.guardianInformation
+                          .primaryGuardianName
+                      : transaction.user.email}
+                  </strong>
+                </p>
+                <p className="text-xs text-gray-400">
+                  Last Updated:{' '}
+                  {new Date(transaction.updatedAt).toDateString()}
+                </p>
+                {transaction.schoolFee.student.studentRecord
+                  .discount && (
+                  <p className="text-xs font-semibold text-primary-500">
+                    Applied discount:{' '}
+                    {
+                      transaction.schoolFee.student.studentRecord
+                        .discount
+                    }
+                  </p>
+                )}
+                <small>{transaction.user.email}</small>
+              </div>
+            ),
+          },
+          {
+            field: 'paymentTerms',
+            headerName: 'Payment Terms',
+            flex: 1,
+            renderCell: (params) => (
+             <div className="flex flex-col items-center">
+              <div className="flex">
+                {
+                  PAYMENT_TYPE[
+                    transaction.schoolFee.paymentType
+                  ]
+                }
+              </div>
+              <div className="flex text-sm text-gray-400 italic">
+                {transaction.schoolFee.paymentType ===
+                PaymentType.ANNUAL
+                  ? 'Total Fee'
+                  : transaction.schoolFee.order === 0
+                  ? 'Initial Fee'
+                  : `Payment #${transaction.schoolFee.order}`}
+              </div>
+              <p className="text-xs font-semibold text-primary-500">
+                {getDeadline(
+                  transaction.schoolFee.order,
+                  transaction.schoolFee.paymentType,
+                  transaction.createdAt,
+                  transaction.schoolFee.student.studentRecord
+                    .schoolYear
+                ) || null}
+              </p>
+            </div>
+            ),
+          },
+          {
+            field: 'transactionDetails',
+            headerName: 'Transaction Details',
+            flex: 1,
+            renderCell: (params) => (
+              <div>
+                {transaction.paymentReference ? (
+                  <h4 className="flex space-x-3">
+                    <span className="font-mono font-bold uppercase">
+                      {transaction.paymentReference}
+                    </span>
+                    <span
+                      className={`rounded-full py-0.5 text-xs px-2 ${
+                        STATUS_BG_COLOR[transaction.paymentStatus]
+                      }`}
+                    >
+                      {STATUS_CODES[transaction.paymentStatus]}
+                    </span>
+                  </h4>
+                ) : (
+                  <h4 className="text-lg font-bold text-gray-300">
+                    -
+                  </h4>
+                )}
+                <p className="font-mono text-xs text-gray-400 lowercase">
+                  {transaction.transactionId}
+                </p>
+              </div>
+            ),
+          },
+          {
+            field: 'amount',
+            headerName: 'Amount',
+            flex: 1,
+            renderCell: (params) => (
+              // ... (rest of the code remains the same)
+            ),
+          },
+          {
+            field: 'actions',
+            headerName: 'Actions',
+            flex: 1,
+            renderCell: (params) => (
+              // ... (rest of the code remains the same)
+            ),
+          },
+        ]}
+        pageSize={5}
+        checkboxSelection
+        disableSelectionOnClick
+      /> */}
           </Card.Body>
         </Card>
       </Content.Container>
